@@ -1,49 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Отправка данных в Google App Script</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Apps Script Communication</title>
 </head>
 <body>
+    <button onclick="sendRequest()">Send Request</button>
+    <p id="response"></p>
 
-<h2>Отправка данных в Google App Script</h2>
-
-<form id="myForm">
-    <label for="data">Введите данные:</label><br>
-    <input type="text" id="data" name="data"><br><br>
-    <button type="button" onclick="submitData()">Отправить данные</button>
-</form>
-
-<div id="message"></div>
-
-<script>
-function submitData() {
-    var data = document.getElementById("data").value;
-
-    // Создаем объект XMLHttpRequest
-    var xhr = new XMLHttpRequest();
-    var url = "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec";
-
-    // Устанавливаем тип запроса и URL
-    xhr.open("POST", url, true);
-
-    // Устанавливаем заголовок Content-Type
-    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    // Отправляем данные формы
-    xhr.send("data=" + data);
-
-    // Обрабатываем ответ
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                document.getElementById("message").innerHTML = "Данные успешно отправлены!";
-            } else {
-                document.getElementById("message").innerHTML = "Ошибка при отправке данных.";
-            }
+    <script>
+        function sendRequest() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    document.getElementById("response").innerHTML = response.message;
+                }
+            };
+            xhr.send();
         }
-    };
-}
-</script>
-
+    </script>
 </body>
 </html>

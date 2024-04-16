@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Проверка связи с Google Apps Script</title>
+  <title>Создание нового документа</title>
+  <script>
+    function createNewDocument() {
+      var result = document.getElementById("result").value;
+      google.script.run.createDocument(result);
+    }
+  </script>
 </head>
 <body>
-  <h1>Введите текст для отправки в Google Docs:</h1>
-  <input type="text" id="data">
-  <button onclick="sendData()">Отправить</button>
+  <input type="text" id="result" placeholder="Введите данные">
+  <button onclick="createNewDocument()">Отправить</button>
 
   <script>
-    function sendData() {
-      var data = document.getElementById("data").value;
-      var url = "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec?data=" + data;
-      fetch(url)
-        .then(response => response.text())
-        .then(result => alert(result));
+    function onSuccess(message) {
+      alert(message);
     }
+
+    google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).createDocument(result);
   </script>
 </body>
 </html>

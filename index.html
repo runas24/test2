@@ -1,42 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Форма для отправки данных</title>
 </head>
 <body>
-    <h1>Форма для отправки данных</h1>
+    <h2>Введите данные:</h2>
     <form id="myForm">
         <label for="data">Введите данные:</label><br>
         <input type="text" id="data" name="data"><br>
-        <input type="submit" value="Отправить">
+        <button type="button" onclick="submitData()">Отправить</button>
     </form>
 
-    <div id="response"></div>
-
     <script>
-        document.getElementById('myForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            var formData = new FormData(this);
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка при отправке данных.');
-                }
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('response').innerText = data;
-            })
-            .catch(error => {
-                console.error('Произошла ошибка:', error);
-                document.getElementById('response').innerText = 'Произошла ошибка при отправке данных.';
-            });
-        });
+        function submitData() {
+            var formData = document.getElementById("myForm");
+            var data = formData.elements["data"].value;
+            google.script.run.withSuccessHandler(function(response) {
+                alert(response);
+            }).submitForm(data);
+        }
     </script>
+
+    <!-- Вставьте здесь скрипт Google Apps Script -->
 </body>
 </html>

@@ -27,6 +27,9 @@
             // Отправка запроса в Google Apps Script
             fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify({ text: text })
             })
                 .then(response => response.json())

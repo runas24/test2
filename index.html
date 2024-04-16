@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отправка данных на Google Apps Script</title>
+    <title>Отправить данные в Google Apps Script</title>
 </head>
 <body>
-    <h1>Введите данные</h1>
+    <h1>Введите данные:</h1>
     <form id="myForm">
-        <label for="data">Введите данные:</label><br>
-        <input type="text" id="data" name="data"><br>
+        <label for="data">Данные:</label>
+        <input type="text" id="data" name="data">
         <button type="submit">Отправить</button>
     </form>
-    <div id="response"></div>
 
     <script>
         document.getElementById("myForm").addEventListener("submit", function(event) {
@@ -26,12 +25,19 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при отправке запроса.');
+                }
+                return response.text();
+            })
             .then(data => {
-                document.getElementById("response").innerHTML = data;
+                console.log('Запрос успешно отправлен:', data);
+                alert('Запрос успешно отправлен');
             })
             .catch(error => {
                 console.error('Ошибка:', error);
+                alert('Произошла ошибка при отправке запроса');
             });
         }
     </script>

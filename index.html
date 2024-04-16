@@ -30,7 +30,7 @@
               document.getElementById("responseMessage").innerText = "Ошибка в обработке запроса";
             }
           } else {
-            document.getElementById("responseMessage").innerText = "Ошибка при отправке запроса";
+            document.getElementById("responseMessage").innerText = "Ошибка при отправке запроса: " + xhr.status + " " + xhr.statusText;
           }
         }
       };

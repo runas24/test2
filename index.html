@@ -36,9 +36,13 @@
                     if (xhr.status === 200) {
                         document.getElementById('message').textContent = 'Data sent successfully.';
                     } else {
-                        document.getElementById('message').textContent = 'Error: Failed to send data.';
+                        document.getElementById('message').textContent = 'Error: Failed to send data. Status code: ' + xhr.status;
                     }
                 }
+            };
+
+            xhr.onerror = function() {
+                document.getElementById('message').textContent = 'Error: Failed to send data. Network error.';
             };
 
             xhr.send(formData);
@@ -47,4 +51,4 @@
 </body>
 </html>
 
-          
+            

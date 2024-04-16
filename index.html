@@ -1,50 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Форма для ввода данных</title>
-    <script>
-        function sendData() {
-            var formData = new FormData();
-            formData.append('data', document.getElementById('dataInput').value);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Связь с Google Apps Script</title>
+</head>
+<body>
+    <h1>Форма для отправки данных</h1>
+    <form id="myForm">
+        <label for="data">Введите данные:</label><br>
+        <input type="text" id="data" name="data"><br>
+        <button type="button" onclick="submitData()">Отправить</button>
+    </form>
 
+    <p id="message"></p>
+
+    <script>
+        function submitData() {
+            var formData = new FormData(document.getElementById("myForm"));
             fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                if (response.ok) {
-                    alert('Запрос успешно отправлен!');
-                } else {
-                    alert('Произошла ошибка при отправке запроса.');
-                }
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById("message").innerText = result;
             })
             .catch(error => {
-                console.error('Произошла ошибка:', error);
-                alert('Произошла ошибка при отправке запроса.');
+                console.error('Ошибка:', error);
+                document.getElementById("message").innerText = 'Произошла ошибка при отправке данных.';
             });
         }
-    </script>
-</head>
-<body>
-    <h2>Введите данные:</h2>
-    <input type="text" id="dataInput" placeholder="Введите данные">
-    <button onclick="sendData()">Отправить</button>
-
-    <script>
-        // Проверка доступности скрипта Google Apps Script
-        fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-            method: 'OPTIONS'
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('Скрипт доступен');
-            } else {
-                console.error('Ошибка: Скрипт недоступен');
-            }
-        })
-        .catch(error => {
-            console.error('Ошибка:', error);
-        });
     </script>
 </body>
 </html>

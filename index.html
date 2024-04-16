@@ -1,26 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Форма для отправки данных</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Apps Script Integration</title>
 </head>
 <body>
-    <h2>Введите данные:</h2>
-    <form id="myForm">
-        <label for="data">Введите данные:</label><br>
-        <input type="text" id="data" name="data"><br>
-        <button type="button" onclick="submitData()">Отправить</button>
-    </form>
+  <h1>Форма отправки данных</h1>
+  <form id="myForm">
+    <label for="data">Введите данные:</label><br>
+    <input type="text" id="data" name="data"><br>
+    <button type="submit">Отправить</button>
+  </form>
 
-    <script>
-        function submitData() {
-            var formData = document.getElementById("myForm");
-            var data = formData.elements["data"].value;
-            google.script.run.withSuccessHandler(function(response) {
-                alert(response);
-            }).submitForm(data);
+  <div id="message"></div>
+
+  <script>
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      sendData();
+    });
+
+    function sendData() {
+      var formData = new FormData();
+      formData.append("data", document.getElementById("data").value);
+
+      fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("message").innerText = "Данные успешно отправлены!";
+        } else {
+          document.getElementById("message").innerText = "Ошибка: " + data.error;
         }
-    </script>
-
-    <!-- Вставьте здесь скрипт Google Apps Script -->
+      })
+      .catch(error => {
+        document.getElementById("message").innerText = "Произошла ошибка при отправке данных.";
+      });
+    }
+  </script>
 </body>
 </html>

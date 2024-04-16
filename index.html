@@ -1,27 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Google Docs Document Generator</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправить данные на Google Apps Script</title>
 </head>
 <body>
-    <input type="text" id="inputData" placeholder="Enter data to replace {result}">
-    <button onclick="generateDocument()">Generate Document</button>
+    <h1>Введите данные:</h1>
+    <form id="myForm">
+        <label for="data">Данные:</label><br>
+        <input type="text" id="data" name="data"><br><br>
+        <input type="submit" value="Отправить">
+    </form>
 
-    <p id="outputMessage"></p>
+    <div id="response"></div>
 
     <script>
-        function generateDocument() {
-            var inputData = document.getElementById('inputData').value;
+        document.getElementById("myForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            sendData();
+        });
 
-            // Make a POST request to the Google Apps Script URL
-            $.post('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', { data: inputData }, function(response) {
-                if(response === 'Success') {
-                    document.getElementById('outputMessage').textContent = 'Document generated successfully.';
-                } else {
-                    document.getElementById('outputMessage').textContent = 'Error generating document.';
-                }
-            });
+        function sendData() {
+            var formData = new FormData(document.getElementById("myForm"));
+            fetch("https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById("response").innerHTML = result;
+            })
+            .catch(error => console.error("Ошибка:", error));
         }
     </script>
 </body>

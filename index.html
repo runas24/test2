@@ -20,14 +20,10 @@
             e.preventDefault(); // Предотвращаем отправку формы по умолчанию
 
             // Получаем данные из формы
-            var formData = new FormData(document.getElementById('myForm'));
-            var dataValue = formData.get('data');
+            var dataValue = document.getElementById('data').value;
 
             // Отправляем данные на сервер
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
-                body: JSON.stringify({data: dataValue})
-            })
+            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec?data=' + encodeURIComponent(dataValue))
             .then(response => response.json())
             .then(data => {
                 // Показываем сообщение об успешной отправке или ошибке

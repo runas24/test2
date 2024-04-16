@@ -12,6 +12,8 @@
         <button type="submit">Submit</button>
     </form>
 
+    <div id="message"></div>
+
     <script>
         document.getElementById('dataForm').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -30,8 +32,12 @@
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 
             xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-                    console.log('Data sent successfully.');
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        document.getElementById('message').textContent = 'Data sent successfully.';
+                    } else {
+                        document.getElementById('message').textContent = 'Error: Failed to send data.';
+                    }
                 }
             };
 
@@ -40,3 +46,5 @@
     </script>
 </body>
 </html>
+
+          

@@ -1,46 +1,49 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Apps Script Integration</title>
+    <meta charset="UTF-8">
+    <title>Проверка связи с Google Apps Script</title>
 </head>
 <body>
-  <h1>Форма отправки данных</h1>
-  <form id="myForm">
-    <label for="data">Введите данные:</label><br>
-    <input type="text" id="data" name="data"><br>
-    <button type="submit">Отправить</button>
-  </form>
+    <h1>Проверка связи</h1>
+    <form id="myForm">
+        <label for="input">Введите текст:</label>
+        <input type="text" id="input" name="input">
+        <button type="submit">Отправить</button>
+    </form>
 
-  <div id="message"></div>
+    <div id="result"></div>
 
-  <script>
-    document.getElementById("myForm").addEventListener("submit", function(event) {
-      event.preventDefault();
-      sendData();
-    });
+    <script>
+        const form = document.getElementById('myForm');
+        const input = document.getElementById('input');
+        const resultDiv = document.getElementById('result');
 
-    function sendData() {
-      var formData = new FormData();
-      formData.append("data", document.getElementById("data").value);
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
 
-      fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById("message").innerText = "Данные успешно отправлены!";
-        } else {
-          document.getElementById("message").innerText = "Ошибка: " + data.error;
-        }
-      })
-      .catch(error => {
-        document.getElementById("message").innerText = "Произошла ошибка при отправке данных.";
-      });
-    }
-  </script>
+            const text = input.value;
+
+            // Отправка запроса в Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ text: text })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resultDiv.textContent = 'Запрос успешно отправлен! Текст: ' + data.result;
+                    } else {
+                        resultDiv.textContent = 'Ошибка: ' + data.error;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.textContent = 'Не удалось отправить запрос: ' + error;
+                });
+        });
+    </script>
 </body>
 </html>

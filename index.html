@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Создание нового документа</title>
-  <script>
-    function createNewDocument() {
-      var result = document.getElementById("result").value;
-      google.script.run.createDocument(result);
-    }
-  </script>
+    <title>Google Apps Script Connection</title>
 </head>
 <body>
-  <input type="text" id="result" placeholder="Введите данные">
-  <button onclick="createNewDocument()">Отправить</button>
+    <h1>Check Connection and Document Update</h1>
 
-  <script>
-    function onSuccess(message) {
-      alert(message);
-    }
+    <button onclick="sendRequest()">Send Request</button>
 
-    google.script.run.withSuccessHandler(onSuccess).withFailureHandler(onFailure).createDocument(result);
-  </script>
+    <script>
+        function sendRequest() {
+            var result = "Your Input Here"; // Здесь можно ввести свои данные для замены в документе
+
+            var scriptURL = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec';
+            var templateId = '1IUYokH_Gy9BJEDxlOUqmWq15aYH3Oq2TSbOCP0ZeFdQ';
+
+            var url = scriptURL + '?result=' + result + '&templateId=' + templateId;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Request Sent Successfully. Document Updated.");
+                    } else {
+                        alert("Error: Request Failed.");
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>

@@ -1,32 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Google Apps Script Connection</title>
+    <title>Google Docs Document Generator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-    <h1>Check Connection and Document Update</h1>
+    <input type="text" id="inputData" placeholder="Enter data to replace {result}">
+    <button onclick="generateDocument()">Generate Document</button>
 
-    <button onclick="sendRequest()">Send Request</button>
+    <p id="outputMessage"></p>
 
     <script>
-        function sendRequest() {
-            var result = "Your Input Here"; // Здесь можно ввести свои данные для замены в документе
+        function generateDocument() {
+            var inputData = document.getElementById('inputData').value;
 
-            var scriptURL = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec';
-            var templateId = '1IUYokH_Gy9BJEDxlOUqmWq15aYH3Oq2TSbOCP0ZeFdQ';
-
-            var url = scriptURL + '?result=' + result + '&templateId=' + templateId;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Request Sent Successfully. Document Updated.");
-                    } else {
-                        alert("Error: Request Failed.");
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            // Make a POST request to the Google Apps Script URL
+            $.post('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', { data: inputData }, function(response) {
+                if(response === 'Success') {
+                    document.getElementById('outputMessage').textContent = 'Document generated successfully.';
+                } else {
+                    document.getElementById('outputMessage').textContent = 'Error generating document.';
+                }
+            });
         }
     </script>
 </body>

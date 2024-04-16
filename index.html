@@ -3,38 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для отправки данных</title>
+    <title>Google App Script Communication</title>
 </head>
 <body>
-    <h1>Введите данные:</h1>
-    <form id="dataForm">
-        <label for="data">Данные:</label><br>
-        <textarea id="data" name="data" rows="4" cols="50"></textarea><br>
-        <button type="submit">Отправить</button>
+    <h1>Google App Script Communication</h1>
+    <form id="myForm">
+        <label for="inputData">Enter Data:</label><br>
+        <input type="text" id="inputData" name="inputData"><br>
+        <input type="submit" value="Submit">
     </form>
 
-    <div id="response"></div>
-
     <script>
-        document.getElementById('dataForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Предотвращаем отправку формы по умолчанию
-            var formData = new FormData(this);
-            sendData(formData);
-        });
+        document.getElementById("myForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
 
-        function sendData(formData) {
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
+            // Get input data
+            var inputData = document.getElementById("inputData").value;
+
+            // Prepare data to send
+            var formData = new FormData();
+            formData.append("inputData", inputData);
+
+            // Send data to Google App Script
+            fetch("https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", {
+                method: "POST",
                 body: formData
             })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('response').innerText = data;
+            .then(response => {
+                if (response.ok) {
+                    alert("Request successfully sent!");
+                } else {
+                    throw new Error("Failed to send request!");
+                }
             })
             .catch(error => {
-                console.error('Ошибка:', error);
+                alert("Error: " + error.message);
             });
-        }
+        });
     </script>
 </body>
 </html>

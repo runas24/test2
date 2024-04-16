@@ -31,8 +31,10 @@
     <button onclick="sendData()">Отправить</button>
 
     <script>
-        // Проверка доступности скрипта Google Apps Script
-        fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec')
+        // Проверка доступности скрипта Google Apps Script и CORS
+        fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+            method: 'OPTIONS'
+        })
         .then(response => {
             if (response.ok) {
                 console.log('Скрипт доступен');
@@ -43,20 +45,6 @@
         .catch(error => {
             console.error('Ошибка:', error);
         });
-
-        // Проверка CORS
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    console.log('CORS разрешен');
-                } else {
-                    console.error('Ошибка: CORS заблокирован');
-                }
-            }
-        };
-        xhr.send();
     </script>
 </body>
 </html>

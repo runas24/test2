@@ -3,42 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отправить данные в Google Apps Script</title>
+    <title>Форма для создания документа</title>
 </head>
 <body>
-    <h1>Введите данные:</h1>
-    <form id="myForm">
-        <label for="data">Данные:</label>
-        <input type="text" id="data" name="data">
+    <h1>Форма для создания документа</h1>
+    <form id="createForm">
+        <label for="inputData">Введите данные:</label><br>
+        <input type="text" id="inputData" name="inputData"><br><br>
         <button type="submit">Отправить</button>
     </form>
 
+    <div id="responseMessage"></div>
+
     <script>
-        document.getElementById("myForm").addEventListener("submit", function(event) {
+        document.getElementById("createForm").addEventListener("submit", function(event) {
             event.preventDefault();
             sendData();
         });
 
         function sendData() {
-            var formData = new FormData(document.getElementById("myForm"));
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка при отправке запроса.');
-                }
-                return response.text();
-            })
-            .then(data => {
-                console.log('Запрос успешно отправлен:', data);
-                alert('Запрос успешно отправлен');
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                alert('Произошла ошибка при отправке запроса');
-            });
+            var inputData = document.getElementById("inputData").value;
+            google.script.run.withSuccessHandler(function(response) {
+                document.getElementById("responseMessage").innerText = response;
+            }).createDocument(inputData);
         }
     </script>
 </body>

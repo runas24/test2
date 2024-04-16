@@ -3,33 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Связь с Google Apps Script</title>
+    <title>Форма для отправки данных</title>
 </head>
 <body>
-    <h1>Форма для отправки данных</h1>
+    <h2>Введите информацию:</h2>
     <form id="myForm">
         <label for="data">Введите данные:</label><br>
-        <input type="text" id="data" name="data"><br>
-        <button type="button" onclick="submitData()">Отправить</button>
+        <input type="text" id="data" name="data"><br><br>
+        <button type="button" onclick="sendData()">Отправить</button>
     </form>
 
-    <p id="message"></p>
+    <p id="response"></p>
 
     <script>
-        function submitData() {
-            var formData = new FormData(document.getElementById("myForm"));
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(result => {
-                document.getElementById("message").innerText = result;
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                document.getElementById("message").innerText = 'Произошла ошибка при отправке данных.';
-            });
+        function sendData() {
+            var data = document.getElementById("data").value;
+
+            var xhr = new XMLHttpRequest();
+            var url = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec';
+
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("response").innerHTML = xhr.responseText;
+                }
+            };
+
+            var dataToSend = JSON.stringify({ "data": data });
+            xhr.send(dataToSend);
         }
     </script>
 </body>

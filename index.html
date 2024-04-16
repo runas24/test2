@@ -3,35 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отправка данных на Google Apps Script</title>
+    <title>Отправить запрос</title>
 </head>
 <body>
-    <h1>Введите информацию:</h1>
+    <h1>Отправить запрос на Google Apps Script</h1>
     <form id="myForm">
-        <label for="data">Информация:</label>
-        <input type="text" id="data" name="data">
+        <label for="inputData">Введите информацию:</label>
+        <input type="text" id="inputData" name="inputData">
         <button type="submit">Отправить</button>
     </form>
 
+    <div id="response"></div>
+
     <script>
-        const form = document.getElementById('myForm');
-
-        form.addEventListener('submit', async function(event) {
+        document.getElementById('myForm').addEventListener('submit', function(event) {
             event.preventDefault();
-            const formData = new FormData(form);
-            const data = formData.get('data');
+            var inputData = document.getElementById('inputData').value;
 
-            const response = await fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
                 method: 'POST',
-                body: JSON.stringify({data}),
                 headers: {
                     'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ inputData: inputData })
+            })
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(data) {
+                if (data.success) {
+                    document.getElementById('response').innerText = "Запрос успешно отправлен. Новый документ создан.";
+                } else {
+                    document.getElementById('response').innerText = "Произошла ошибка при отправке запроса.";
                 }
+            })
+            .catch(function(error) {
+                console.error('Произошла ошибка:', error);
+                document.getElementById('response').innerText = "Произошла ошибка при отправке запроса.";
             });
-
-            const result = await response.json();
-            alert(result.message);
         });
     </script>
 </body>
-<
+</html>

@@ -1,42 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для ввода данных</title>
+    <title>Проверка связи с Google Apps Script</title>
 </head>
 <body>
-    <h1>Введите данные:</h1>
+    <h1>Проверка связи</h1>
     <form id="myForm">
-        <label for="data">Введите данные:</label><br>
-        <input type="text" id="data" name="data"><br>
-        <input type="submit" value="Отправить">
+        <label for="input">Введите текст:</label>
+        <input type="text" id="input" name="input">
+        <button type="submit">Отправить</button>
     </form>
 
-    <div id="message"></div>
+    <div id="result"></div>
 
     <script>
-        document.getElementById('myForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Предотвращаем отправку формы по умолчанию
+        const form = document.getElementById('myForm');
+        const input = document.getElementById('input');
+        const resultDiv = document.getElementById('result');
 
-            // Получаем данные из формы
-            var dataValue = document.getElementById('data').value;
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
 
-            // Отправляем данные на сервер
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec?data=' + encodeURIComponent(dataValue))
-            .then(response => response.json())
-            .then(data => {
-                // Показываем сообщение об успешной отправке или ошибке
-                if(data.success) {
-                    document.getElementById('message').innerText = 'Данные успешно отправлены!';
-                } else {
-                    document.getElementById('message').innerText = 'Ошибка: ' + data.error;
-                }
+            const text = input.value;
+
+            // Отправка запроса в Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+                method: 'POST',
+                body: JSON.stringify({ text: text })
             })
-            .catch(error => {
-                console.error('Произошла ошибка:', error);
-                document.getElementById('message').innerText = 'Произошла ошибка при отправке данных.';
-            });
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        resultDiv.textContent = 'Запрос успешно отправлен! Текст: ' + data.result;
+                    } else {
+                        resultDiv.textContent = 'Ошибка: ' + data.error;
+                    }
+                })
+                .catch(error => {
+                    resultDiv.textContent = 'Не удалось отправить запрос: ' + error;
+                });
         });
     </script>
 </body>

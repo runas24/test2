@@ -1,42 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Google Apps Script Communication</title>
+    <title>Форма для ввода данных</title>
+    <script>
+        function sendData() {
+            var formData = new FormData();
+            formData.append('data', document.getElementById('dataInput').value);
+
+            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Запрос успешно отправлен!');
+                } else {
+                    alert('Произошла ошибка при отправке запроса.');
+                }
+            })
+            .catch(error => {
+                console.error('Произошла ошибка:', error);
+                alert('Произошла ошибка при отправке запроса.');
+            });
+        }
+    </script>
 </head>
 <body>
-  <h1>Google Apps Script Communication</h1>
-  <input type="text" id="inputData" placeholder="Введите ваш текст">
-  <button onclick="sendData()">Отправить</button>
-  <p id="responseMessage"></p>
-
-  <script>
-    function sendData() {
-      var inputData = document.getElementById("inputData").value;
-      var url = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec';
-
-      var xhr = new XMLHttpRequest();
-      xhr.open("POST", url, true);
-      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4) {
-          if (xhr.status === 200) {
-            var response = JSON.parse(xhr.responseText);
-            if (response.success) {
-              document.getElementById("responseMessage").innerText = "Запрос успешно отправлен";
-            } else {
-              document.getElementById("responseMessage").innerText = "Ошибка в обработке запроса";
-            }
-          } else {
-            document.getElementById("responseMessage").innerText = "Ошибка при отправке запроса: " + xhr.status + " " + xhr.statusText;
-          }
-        }
-      };
-
-      xhr.send("data=" + encodeURIComponent(inputData));
-    }
-  </script>
+    <h2>Введите данные:</h2>
+    <input type="text" id="dataInput" placeholder="Введите данные">
+    <button onclick="sendData()">Отправить</button>
 </body>
 </html>

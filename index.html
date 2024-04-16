@@ -4,8 +4,14 @@
     <title>Форма для ввода данных</title>
     <script>
         function sendData() {
+            var dataInput = document.getElementById('dataInput').value;
+            if (!dataInput) {
+                alert('Пожалуйста, введите данные!');
+                return;
+            }
+
             var formData = new FormData();
-            formData.append('data', document.getElementById('dataInput').value);
+            formData.append('data', dataInput);
 
             fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
                 method: 'POST',
@@ -15,14 +21,12 @@
                 if (response.ok) {
                     alert('Запрос успешно отправлен!');
                 } else {
-                    response.text().then(errorMessage => {
-                        alert('Произошла ошибка при отправке запроса: ' + errorMessage);
-                    });
+                    throw new Error('Произошла ошибка при отправке запроса.');
                 }
             })
             .catch(error => {
-                console.error('Произошла ошибка:', error);
-                alert('Произошла ошибка при отправке запроса: ' + error.message);
+                console.error('Произошла ошибка:', error.message);
+                alert('Произошла ошибка при отправке запроса.');
             });
         }
     </script>

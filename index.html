@@ -3,52 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Form</title>
+    <title>Форма для отправки данных на Google Apps Script</title>
 </head>
 <body>
-    <form id="dataForm">
-        <label for="result">Result:</label>
-        <input type="text" id="result" name="result">
-        <button type="submit">Submit</button>
+    <form id="myForm">
+        <label for="result">Введите результат:</label><br>
+        <input type="text" id="result" name="result"><br><br>
+        <button type="button" onclick="submitForm()">Отправить</button>
     </form>
 
-    <div id="message"></div>
-
     <script>
-        document.getElementById('dataForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            var formData = new FormData(this);
+        function submitForm() {
+            var result = document.getElementById("result").value;
+            var url = "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec";
 
-            // Send data to Google Apps Script
-            sendData(formData);
-        });
+            var formData = new FormData();
+            formData.append("result", result);
 
-        function sendData(formData) {
-            var xhr = new XMLHttpRequest();
-            var url = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec'; // Замените 'your_script_id' на реальный идентификатор вашего скрипта
-
-            xhr.open('POST', url, true);
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        document.getElementById('message').textContent = 'Data sent successfully.';
-                    } else {
-                        document.getElementById('message').textContent = 'Error: Failed to send data. Status code: ' + xhr.status;
-                    }
+            fetch(url, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert("Данные успешно отправлены на Google Apps Script.");
+                } else {
+                    alert("Произошла ошибка при отправке данных.");
                 }
-            };
-
-            xhr.onerror = function() {
-                document.getElementById('message').textContent = 'Error: Failed to send data. Network error.';
-            };
-
-            xhr.send(formData);
+            })
+            .catch(error => console.error("Произошла ошибка:", error));
         }
     </script>
 </body>
 </html>
-
-            

@@ -12,12 +12,12 @@
     <script>
         function sendRequest() {
             var xhr = new XMLHttpRequest();
-            xhr.open("GET", "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", true);
             xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
                     document.getElementById("response").innerHTML = xhr.responseText;
                 }
             };
+            xhr.open("GET", "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", true);
             xhr.send();
         }
     </script>

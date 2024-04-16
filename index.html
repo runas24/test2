@@ -1,25 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Apps Script Communication</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Форма для отправки данных</title>
 </head>
 <body>
-    <button onclick="sendRequest()">Отправить запрос</button>
-    <p id="response"></p>
 
-    <script>
-        function sendRequest() {
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4 && xhr.status === 200) {
-                    document.getElementById("response").innerHTML = xhr.responseText;
-                }
-            };
-            xhr.open("GET", "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", true);
-            xhr.send();
-        }
-    </script>
+<form id="dataForm">
+  <label for="dataInput">Введите данные:</label><br>
+  <input type="text" id="dataInput" name="dataInput"><br>
+  <button type="submit">Отправить</button>
+</form>
+
+<div id="message"></div>
+
+<script>
+document.getElementById("dataForm").addEventListener("submit", function(event) {
+  event.preventDefault(); // Предотвращаем отправку формы по умолчанию
+  
+  var formData = new FormData(this);
+  
+  fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.text())
+  .then(data => {
+    document.getElementById("message").textContent = data; // Выводим сообщение о результате
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+});
+</script>
+
 </body>
 </html>

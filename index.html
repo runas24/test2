@@ -1,39 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Форма для отправки данных</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отправка данных в Google Apps Script</title>
 </head>
 <body>
+    <h1>Отправка данных в Google Apps Script</h1>
+    <form id="myForm">
+        <label for="data">Введите данные:</label><br>
+        <input type="text" id="data" name="data"><br>
+        <button type="submit">Отправить</button>
+    </form>
 
-<form id="dataForm">
-  <label for="dataInput">Введите данные:</label><br>
-  <input type="text" id="dataInput" name="dataInput"><br>
-  <button type="submit">Отправить</button>
-</form>
+    <div id="message"></div>
 
-<div id="message"></div>
+    <script>
+        document.getElementById("myForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            sendData();
+        });
 
-<script>
-document.getElementById("dataForm").addEventListener("submit", function(event) {
-  event.preventDefault(); // Предотвращаем отправку формы по умолчанию
-  
-  var formData = new FormData(this);
-  
-  fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => response.text())
-  .then(data => {
-    document.getElementById("message").textContent = data; // Выводим сообщение о результате
-  })
-  .catch(error => {
-    console.error('Error:', error);
-  });
-});
-</script>
-
+        function sendData() {
+            var formData = new FormData(document.getElementById("myForm"));
+            fetch("https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error("Ошибка при отправке запроса");
+            })
+            .then(data => {
+                document.getElementById("message").innerText = "Запрос успешно отправлен: " + data;
+            })
+            .catch(error => {
+                document.getElementById("message").innerText = error.message;
+            });
+        }
+    </script>
 </body>
 </html>

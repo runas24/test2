@@ -1,52 +1,21 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Проверка связи с Google Apps Script</title>
+  <title>Проверка связи с Google Apps Script</title>
 </head>
 <body>
-    <h1>Проверка связи с Google Apps Script</h1>
+  <h1>Введите текст для отправки в Google Docs:</h1>
+  <input type="text" id="data">
+  <button onclick="sendData()">Отправить</button>
 
-    <form id="myForm">
-        <label for="inputField">Введите текст:</label>
-        <input type="text" id="inputField" name="inputField" required>
-        <button type="submit">Отправить</button>
-    </form>
-
-    <div id="result"></div>
-
-    <script>
-        const form = document.getElementById('myForm');
-        const inputField = document.getElementById('inputField');
-        const resultDiv = document.getElementById('result');
-
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-
-            const inputText = inputField.value;
-
-            // Отправка запроса в Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
-                body: JSON.stringify({
-                    inputText: inputText
-                }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        resultDiv.textContent = 'Данные успешно отправлены!';
-                    } else {
-                        resultDiv.textContent = 'Ошибка: ' + data.error;
-                    }
-                })
-                .catch(error => {
-                    resultDiv.textContent = 'Произошла ошибка: ' + error.message;
-                });
-        });
-    </script>
+  <script>
+    function sendData() {
+      var data = document.getElementById("data").value;
+      var url = "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec?data=" + data;
+      fetch(url)
+        .then(response => response.text())
+        .then(result => alert(result));
+    }
+  </script>
 </body>
 </html>

@@ -1,13 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <title>Взаимодействие с Google Apps Script</title>
+  <meta charset="UTF-8">
+  <title>Проверка связи с Google Apps Script</title>
 </head>
 <body>
-  <h1>Введите текст для замены в Google Docs:</h1>
-  <form action="https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec" method="get">
-    <input type="text" name="result" id="result">
-    <button type="submit">Отправить</button>
+  <h1>Проверка связи с Google Apps Script</h1>
+
+  <form id="myForm">
+    <label for="inputField">Введите текст:</label>
+    <input type="text" id="inputField" name="inputField">
+    <button type="button" onclick="checkConnection()">Проверить связь</button>
   </form>
+
+  <div id="result"></div>
+
+  <script>
+    function checkConnection() {
+      var inputValue = document.getElementById("inputField").value;
+
+      // Отправить запрос на Google Apps Script с помощью fetch API
+      fetch("https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec?inputValue=" + inputValue)
+        .then(function(response) {
+          return response.text();
+        })
+        .then(function(text) {
+          document.getElementById("result").innerHTML = text;
+        })
+        .catch(function(error) {
+          console.error(error);
+          document.getElementById("result").innerHTML = "Ошибка: " + error.message;
+        });
+    }
+  </script>
 </body>
 </html>

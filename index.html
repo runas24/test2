@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для отправки данных на Google Apps Script</title>
+    <title>Связь с Google Apps Script</title>
 </head>
 <body>
-    <form id="myForm">
-        <label for="result">Введите результат:</label><br>
-        <input type="text" id="result" name="result"><br><br>
-        <button type="button" onclick="submitForm()">Отправить</button>
-    </form>
-
+    <button id="createDocumentButton">Создать документ</button>
+    
     <script>
-        function submitForm() {
-            var result = document.getElementById("result").value;
-            var url = "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec";
+        document.getElementById('createDocumentButton').addEventListener('click', function() {
+            var scriptURL = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec';
+            var templateDocId = '1IUYokH_Gy9BJEDxlOUqmWq15aYH3Oq2TSbOCP0ZeFdQ';
 
-            var formData = new FormData();
-            formData.append("result", result);
+            // Здесь вы можете собрать данные, которые хотите отправить в ваш скрипт
+            var requestData = {
+                // Например, если у вас есть переменная $result, вы можете её добавить здесь
+                result: 'Здесь ваш результат'
+            };
 
-            fetch(url, {
-                method: "POST",
-                body: formData
+            // Отправляем POST-запрос к Google Apps Script
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors', // Не ждем ответа от сервера
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestData)
             })
-            .then(response => {
-                if (response.ok) {
-                    alert("Данные успешно отправлены на Google Apps Script.");
-                } else {
-                    alert("Произошла ошибка при отправке данных.");
-                }
+            .then(function(response) {
+                // Обработка ответа
+                console.log('Запрос отправлен успешно');
             })
-            .catch(error => console.error("Произошла ошибка:", error));
-        }
+            .catch(function(error) {
+                // Обработка ошибок
+                console.error('Произошла ошибка при отправке запроса:', error);
+            });
+        });
     </script>
 </body>
 </html>

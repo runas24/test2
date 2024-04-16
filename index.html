@@ -3,41 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для отправки данных</title>
+    <title>Отправка данных на Google Apps Script</title>
 </head>
 <body>
-    <h1>Введите данные для замены в документе:</h1>
-    <form id="dataForm">
-        <label for="dataInput">Данные:</label>
-        <input type="text" id="dataInput" name="dataInput"><br><br>
-        <button type="button" onclick="submitData()">Отправить данные</button>
+    <h1>Введите информацию:</h1>
+    <form id="myForm">
+        <label for="data">Информация:</label>
+        <input type="text" id="data" name="data">
+        <button type="submit">Отправить</button>
     </form>
 
-    <p id="responseMessage"></p>
-
     <script>
-        function submitData() {
-            var data = document.getElementById("dataInput").value;
-            var url = 'https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec';
+        const form = document.getElementById('myForm');
 
-            // Создаем объект XMLHttpRequest
-            var xhr = new XMLHttpRequest();
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = formData.get('data');
 
-            // Конфигурируем его: GET-запрос на URL
-            xhr.open('GET', url + '?data=' + encodeURIComponent(data), true);
-
-            // Отправляем запрос
-            xhr.send();
-
-            // Отслеживаем состояние запроса
-            xhr.onreadystatechange = function () {
-                // Если запрос завершен и статус "OK"
-                if (xhr.readyState == 4 && xhr.status == 200) {
-                    // Выводим сообщение о результате отправки
-                    document.getElementById("responseMessage").innerHTML = xhr.responseText;
+            const response = await fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+                method: 'POST',
+                body: JSON.stringify({data}),
+                headers: {
+                    'Content-Type': 'application/json'
                 }
-            };
-        }
+            });
+
+            const result = await response.json();
+            alert(result.message);
+        });
     </script>
 </body>
-</html>
+<

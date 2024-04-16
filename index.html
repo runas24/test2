@@ -3,29 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для создания документа</title>
+    <title>Форма ввода данных</title>
 </head>
 <body>
-    <h1>Форма для создания документа</h1>
-    <form id="createForm">
-        <label for="inputData">Введите данные:</label><br>
-        <input type="text" id="inputData" name="inputData"><br><br>
-        <button type="submit">Отправить</button>
+    <h1>Форма ввода данных</h1>
+    <form id="dataForm">
+        <label for="dataInput">Введите данные:</label><br>
+        <input type="text" id="dataInput" name="dataInput"><br>
+        <button type="button" onclick="submitData()">Отправить</button>
     </form>
 
-    <div id="responseMessage"></div>
-
     <script>
-        document.getElementById("createForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            sendData();
-        });
+        function submitData() {
+            var inputData = document.getElementById("dataInput").value;
+            google.script.run.withSuccessHandler(showMessage).submitDataToGoogleSheet(inputData);
+        }
 
-        function sendData() {
-            var inputData = document.getElementById("inputData").value;
-            google.script.run.withSuccessHandler(function(response) {
-                document.getElementById("responseMessage").innerText = response;
-            }).createDocument(inputData);
+        function showMessage(response) {
+            alert(response);
         }
     </script>
 </body>

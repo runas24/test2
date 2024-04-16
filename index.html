@@ -15,12 +15,14 @@
                 if (response.ok) {
                     alert('Запрос успешно отправлен!');
                 } else {
-                    alert('Произошла ошибка при отправке запроса.');
+                    response.text().then(errorMessage => {
+                        alert('Произошла ошибка при отправке запроса: ' + errorMessage);
+                    });
                 }
             })
             .catch(error => {
                 console.error('Произошла ошибка:', error);
-                alert('Произошла ошибка при отправке запроса.');
+                alert('Произошла ошибка при отправке запроса: ' + error.message);
             });
         }
     </script>

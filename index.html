@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для отправки данных</title>
+    <title>Отправка данных на Google Apps Script</title>
 </head>
 <body>
-    <h1>Форма для отправки данных в Google Документ</h1>
+    <h1>Введите данные</h1>
     <form id="myForm">
         <label for="data">Введите данные:</label><br>
         <input type="text" id="data" name="data"><br>
         <button type="submit">Отправить</button>
     </form>
-    <p id="message"></p>
+    <div id="response"></div>
 
     <script>
         document.getElementById("myForm").addEventListener("submit", function(event) {
@@ -22,16 +22,16 @@
 
         function sendData() {
             var formData = new FormData(document.getElementById("myForm"));
-            fetch("https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", {
-                method: "POST",
+            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
+                method: 'POST',
                 body: formData
             })
             .then(response => response.text())
             .then(data => {
-                document.getElementById("message").textContent = data;
+                document.getElementById("response").innerHTML = data;
             })
             .catch(error => {
-                console.error('Ошибка при отправке данных:', error);
+                console.error('Ошибка:', error);
             });
         }
     </script>

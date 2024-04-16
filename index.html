@@ -6,17 +6,16 @@
     <title>Google Apps Script Communication</title>
 </head>
 <body>
-    <button onclick="sendRequest()">Send Request</button>
+    <button onclick="sendRequest()">Отправить запрос</button>
     <p id="response"></p>
 
     <script>
         function sendRequest() {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", true);
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === 4 && xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    document.getElementById("response").innerHTML = response.message;
+                    document.getElementById("response").innerHTML = xhr.responseText;
                 }
             };
             xhr.send();

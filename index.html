@@ -1,102 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Отправка данных в Google Документы</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Apps Script Integration</title>
 </head>
 <body>
-    <section class="hero is-primary is-bold">
-        <div class="hero-body">
-            <div class="container">
-                <h1 class="title">Форма для ввода данных</h1>
-            </div>
-        </div>
-    </section>
-    <form id="form" class="container m-4 pl-4" method="POST">
-        <div class="field">
-            <label class="label">Имя клиента</label>
-            <div class="control">
-                <input class="input" type="text" placeholder="Имя клиента" name="Client Name"/>
-            </div>
-        </div>
+  <form id="form">
+    <label for="data">Enter Data:</label>
+    <input type="text" id="data" name="data">
+    <button type="submit" id="submit-button">Submit</button>
+  </form>
+  <p id="message" style="display: none;"></p>
 
-        <!-- Другие поля формы здесь -->
+  <script>
+    document.getElementById("form").addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent the default form submission
+      document.getElementById("message").textContent = "Submitting..";
+      document.getElementById("message").style.display = "block";
+      document.getElementById("submit-button").disabled = true;
 
-        <div class="field">
-            <label class="label">Результат</label>
-            <div class="control">
-                <input class="input" type="text" placeholder="Результат" name="result"/>
-            </div>
-        </div>
+      // Collect the form data
+      var formData = new FormData(this);
+      var keyValuePairs = [];
+      for (var pair of formData.entries()) {
+        keyValuePairs.push(pair[0] + "=" + pair[1]);
+      }
 
-        <div class="field is-grouped">
-            <div class="control">
-                <button class="button is-primary" type="submit" id="submit-button">Отправить</button>
-            </div>
-            <div class="control">
-                <button class="button is-danger">Отмена</button>
-            </div>
-        </div>
-    </form>
-    <div id="message" style="display: none; margin: 20px; font-weight: bold; color: green; padding: 8px; background-color: beige; border-radius: 4px; border-color: aquamarine;"></div>
+      var formDataString = keyValuePairs.join("&");
 
-    <script>
-        document.getElementById("form").addEventListener("submit", function (e) {
-            e.preventDefault(); // Предотвратить отправку формы по умолчанию
-            document.getElementById("message").textContent = "Отправка..";
-            document.getElementById("message").style.display = "block";
-            document.getElementById("submit-button").disabled = true;
+      // Send a POST request to your Google Apps Script
+      fetch(
+        "https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec",
+        {
+          redirect: "follow",
+          method: "POST",
+          body: formDataString,
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8",
+          },
+        }
+      )
+        .then(function (response) {
+          // Check if the request was successful
+          if (response.ok) {
+            return response.text(); // Assuming your script returns text response
+          } else {
+            throw new Error("Failed to submit the form.");
+          }
+        })
+        .then(function (data) {
+          // Display a success message
+          document.getElementById("message").textContent =
+            "Data submitted successfully! Document created with ID: " + data;
+          document.getElementById("message").style.display = "block";
+          document.getElementById("message").style.backgroundColor = "green";
+          document.getElementById("message").style.color = "beige";
+          document.getElementById("submit-button").disabled = false;
+          document.getElementById("form").reset();
 
-            // Собрать данные формы
-            var formData = new FormData(this);
-            var keyValuePairs = [];
-            for (var pair of formData.entries()) {
-                keyValuePairs.push(pair[0] + "=" + pair[1]);
-            }
-            var formDataString = keyValuePairs.join("&");
-
-            // Отправить POST запрос к вашему скрипту Google Apps Script
-            fetch("https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec", {
-                redirect: "follow",
-                method: "POST",
-                body: formDataString,
-                headers: {
-                    "Content-Type": "text/plain;charset=utf-8"
-                }
-            })
-                .then(function (response) {
-                    // Проверить, был ли запрос успешным
-                    if (response) {
-                        return response; // Предполагая, что ваш скрипт возвращает JSON ответ
-                    } else {
-                        throw new Error("Не удалось отправить форму.");
-                    }
-                })
-                .then(function (data) {
-                    // Отобразить сообщение об успешной отправке
-                    document.getElementById("message").textContent =
-                        "Данные успешно отправлены!";
-                    document.getElementById("message").style.display = "block";
-                    document.getElementById("message").style.backgroundColor = "green";
-                    document.getElementById("message").style.color = "beige";
-                    document.getElementById("submit-button").disabled = false;
-                    document.getElementById("form").reset();
-
-                    setTimeout(function () {
-                        document.getElementById("message").textContent = "";
-                        document.getElementById("message").style.display = "none";
-                    }, 2600);
-                })
-                .catch(function (error) {
-                    // Обработать ошибки, можно отобразить сообщение об ошибке здесь
-                    console.error(error);
-                    document.getElementById("message").textContent =
-                        "Произошла ошибка при отправке формы.";
-                    document.getElementById("message").style.display = "block";
-                });
+          setTimeout(function () {
+            document.getElementById("message").textContent = "";
+            document.getElementById("message").style.display = "none";
+          }, 2600);
+        })
+        .catch(function (error) {
+          // Handle errors, you can display an error message here
+          console.error(error);
+          document.getElementById("message").textContent =
+            "An error occurred while submitting the form.";
+          document.getElementById("message").style.display = "block";
         });
-    </script>
+    });
+  </script>
 </body>
 </html>

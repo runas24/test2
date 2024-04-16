@@ -12,17 +12,14 @@
                 body: formData
             })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка HTTP: ' + response.status);
+                if (response.ok) {
+                    alert('Запрос успешно отправлен!');
+                } else {
+                    alert('Произошла ошибка при отправке запроса. Код ошибки: ' + response.status);
                 }
-                return response.text();
-            })
-            .then(data => {
-                alert('Запрос успешно отправлен!');
-                console.log('Ответ от сервера:', data);
             })
             .catch(error => {
-                console.error('Произошла ошибка:', error.message);
+                console.error('Произошла ошибка:', error);
                 alert('Произошла ошибка при отправке запроса: ' + error.message);
             });
         }

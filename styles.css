@@ -45,10 +45,9 @@ header img {
     background-color: #f2f2f2;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    margin-bottom: 20px;
 }
 
-h2, h3 {
+h2 {
     color: #ffcc00;
 }
 
@@ -70,7 +69,7 @@ input[type="text"] {
     margin-bottom: 10px;
 }
 
-button[type="submit"], button[type="button"] {
+button[type="submit"] {
     width: 100%;
     padding: 10px;
     background-color: #ffcc00;
@@ -81,7 +80,7 @@ button[type="submit"], button[type="button"] {
     transition: background-color 0.3s;
 }
 
-button[type="submit"]:hover, button[type="button"]:hover {
+button[type="submit"]:hover {
     background-color: #ffdb4d;
 }
 

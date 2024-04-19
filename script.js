@@ -50,11 +50,13 @@ document.getElementById("monthlyPaymentForm").addEventListener("submit", functio
 
     var loanAmount = parseFloat(document.getElementById("loanAmount").value.replace(/\D/g, ''));
     var annualInterestRate = parseFloat(document.getElementById("annualInterestRate").value);
-    var loanTerm = parseInt(document.getElementById("loanTerm").value);
+    var loanTermInYears = parseInt(document.getElementById("loanTermInYears").value);
+
+    // Рассчитываем ежемесячную процентную ставку и количество платежей
+    var monthlyInterestRate = annualInterestRate / 100 / 12;
+    var numberOfPayments = loanTermInYears * 12;
 
     // Рассчитываем ежемесячный платеж
-    var monthlyInterestRate = annualInterestRate / 100 / 12;
-    var numberOfPayments = loanTerm * 12;
     var monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
 
     // Выводим результат

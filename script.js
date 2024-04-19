@@ -12,30 +12,35 @@ document.getElementById("loanForm").addEventListener("submit", function(event) {
     var desiredAmount = parseFloat(document.getElementById("desiredAmount").value.replace(/\D/g, ''));
     var creditBurden = parseFloat(document.getElementById("creditBurden").value.replace(/\D/g, ''));
     var pensionContributions = parseFloat(document.getElementById("pensionContributions").value.replace(/\D/g, ''));
-    var loanTerm = parseInt(document.getElementById("loanTerm").value);
 
     // Рассчитываем максимальную сумму кредита
     // Больший процент от пенсионных отчислений увеличивает максимальную сумму кредита
     var maxLoanAmount = desiredAmount - creditBurden + (pensionContributions * 6 * 2);
 
-    // Рассчитываем ежемесячный платеж
-    var monthlyInterestRate = 0.05 / 12; // Процентная ставка в месяц (5% годовых)
-    var numberOfPayments = loanTerm * 12; // Общее количество платежей
-    var monthlyPayment = (maxLoanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+    // Форматируем максимальную сумму кредита с разделением пробелом
+    var formattedMaxLoanAmount = maxLoanAmount.toLocaleString('ru-RU');
 
-    // Проверяем, что сумма кредита не превышает максимальное значение
-    if (desiredAmount > maxLoanAmount) {
-        document.getElementById("resultMessage").textContent = "Ошибка: Сумма кредита превышает максимально возможное значение.";
-        return;
-    }
+    var formData = new FormData();
+    formData.append("fullName", fullName);
+    formData.append("loanDate", loanDate);
+    formData.append("maxLoanAmount", formattedMaxLoanAmount); // Отправляем форматированное значение
 
-    // Форматируем ежемесячный платеж
-    var formattedMonthlyPayment = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'KZT' }).format(monthlyPayment);
+    // Показываем анимированную загрузку
+    var loader = document.getElementById("loader");
+    loader.style.display = "block";
 
-    // Отображаем результаты на странице
-    document.getElementById("resultMessage").textContent = "Максимальная сумма кредита: " + maxLoanAmount.toLocaleString('ru-RU') + " тенге";
-    document.getElementById("monthlyPaymentValue").textContent = formattedMonthlyPayment + " в месяц";
-
-    // Показываем кнопку "Посмотреть результат"
-    document.getElementById("viewResultButton").style.display = "block";
+    fetch('https://script.google.com/macros/s/AKfycbxGh8pH6EOSuN6Ys0vov4Bex-pnyd43S1or2w81LTZoZWM8-nG7sDwyxA9OKs5DXsh4/exec', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("resultMessage").textContent = data;
+        document.getElementById("viewResultButton").style.display = "block"; // Показываем кнопку "Посмотреть результат"
+        loader.style.display = "none"; // Скрываем анимированную загрузку после завершения
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        loader.style.display = "none"; // Скрываем анимированную загрузку в случае ошибки
+    });
 });

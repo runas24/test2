@@ -49,13 +49,14 @@ document.getElementById("monthlyPaymentForm").addEventListener("submit", functio
     event.preventDefault();
 
     var loanAmount = parseFloat(document.getElementById("loanAmount").value.replace(/\D/g, ''));
-    var loanTerm = parseInt(document.getElementById("loanTerm").value);
     var annualInterestRate = parseFloat(document.getElementById("annualInterestRate").value);
+    var loanTerm = parseInt(document.getElementById("loanTerm").value);
 
-    // Рассчитываем ежемесячный платеж по формуле аннуитетного платежа
+    // Рассчитываем ежемесячный платеж
     var monthlyInterestRate = annualInterestRate / 100 / 12;
-    var monthlyPayment = loanAmount * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -loanTerm));
+    var numberOfPayments = loanTerm * 12;
+    var monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
 
-    // Отображаем результат на странице
+    // Выводим результат
     document.getElementById("monthlyPaymentResult").innerHTML = "Ежемесячный платеж: " + monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " тенге";
 });

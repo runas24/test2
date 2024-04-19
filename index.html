@@ -23,7 +23,9 @@
         <input type="text" id="creditBurden" required oninput="formatCurrency(this)"><br>
         <label for="pensionContributions">Пенсионные отчисления за полгода (в тенге):</label>
         <input type="text" id="pensionContributions" required oninput="formatCurrency(this)"><br>
-        <button type="submit">Рассчитать максимальную сумму кредита</button>
+        <label for="loanTerm">Срок кредита (в годах):</label>
+        <input type="text" id="loanTerm" required><br>
+        <button type="submit">Рассчитать</button>
     </form>
     <div id="resultMessage"></div>
     <div id="viewResultButton" style="display: none;">
@@ -31,18 +33,18 @@
     </div>
 </div>
 
-<div class="container">
-    <h3>Расчет ежемесячного платежа</h3>
-    <form id="monthlyPaymentForm">
+<div class="calculator">
+    <h2>Ежемесячный платеж</h2>
+    <div class="input-container">
         <label for="loanAmount">Сумма кредита (в тенге):</label>
-        <input type="text" id="loanAmount" required oninput="formatCurrency(this)"><br>
+        <input type="text" id="loanAmount"><br>
         <label for="annualInterestRate">Годовая процентная ставка (%):</label>
-        <input type="number" id="annualInterestRate" min="0" required><br>
-        <label for="loanTermInYears">Срок кредита (в годах):</label>
-        <input type="number" id="loanTermInYears" min="1" required><br>
-        <button type="submit">Рассчитать ежемесячный платеж</button>
-    </form>
-    <div id="monthlyPaymentResult"></div>
+        <input type="text" id="annualInterestRate"><br>
+        <label for="loanPeriod">Срок кредита (в годах):</label>
+        <input type="text" id="loanPeriod"><br>
+        <button id="calculateMonthlyPayment">Рассчитать</button>
+    </div>
+    <div id="monthlyPayment"></div>
 </div>
 
 <script src="script.js"></script>

@@ -7,18 +7,14 @@ function formatCurrency(input) {
 document.getElementById("loanForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    document.querySelector('button[type="submit"]').classList.add("loading");
+    var loanAmount = parseFloat(document.getElementById("loanAmount").value.replace(/\D/g, ''));
+    var loanTerm = parseInt(document.getElementById("loanTerm").value);
+    var interestRate = parseFloat(document.getElementById("interestRate").value);
 
-    var desiredAmount = parseFloat(document.getElementById("desiredAmount").value.replace(/\D/g, ''));
-    var creditBurden = parseFloat(document.getElementById("creditBurden").value.replace(/\D/g, ''));
-    var pensionContributions = parseFloat(document.getElementById("pensionContributions").value.replace(/\D/g, ''));
+    // Рассчитываем ежемесячный платеж
+    var monthlyInterestRate = interestRate / 100 / 12;
+    var monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -loanTerm));
 
-    // Рассчитываем максимальную сумму кредита
-    // Больший процент от пенсионных отчислений увеличивает максимальную сумму кредита
-    var maxLoanAmount = desiredAmount - creditBurden + (pensionContributions * 6 * 2);
-
-    setTimeout(function() {
-        document.querySelector('button[type="submit"]').classList.remove("loading");
-        document.getElementById("maxLoanAmount").innerText = "Максимальная сумма кредита: " + maxLoanAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " тенге";
-    }, 1000);
+    // Выводим результат
+    document.getElementById("monthlyPayment").innerText = "Ежемесячный платеж: " + monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " тенге";
 });

@@ -1,40 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Форма для отправки данных</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кредитный калькулятор</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Форма для отправки данных в Google Apps Script</h1>
-    <form id="myForm">
-        <label for="data">Введите данные:</label><br>
-        <input type="text" id="data" name="data"><br>
-        <button type="submit">Отправить</button>
+<header>
+    <img src="logo.png" alt="Логотип">
+    <h2>Кредитный калькулятор</h2>
+</header>
+<div class="container">
+    <form id="loanForm">
+        <label for="desiredAmount">Желаемая сумма кредита (в тенге):</label>
+        <input type="text" id="desiredAmount" required oninput="formatCurrency(this)"><br>
+        <label for="creditBurden">Кредитная нагрузка (в тенге):</label>
+        <input type="text" id="creditBurden" required oninput="formatCurrency(this)"><br>
+        <label for="pensionContributions">Пенсионные отчисления за полгода (в тенге):</label>
+        <input type="text" id="pensionContributions" required oninput="formatCurrency(this)"><br>
+        <button type="submit">Рассчитать</button>
     </form>
+    <div id="maxLoanAmount"></div>
+</div>
 
-    <p id="message"></p>
-
-    <script>
-        document.getElementById("myForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            sendData();
-        });
-
-        function sendData() {
-            var formData = new FormData(document.getElementById("myForm"));
-            fetch('https://script.google.com/macros/s/AKfycbx8l5uPCqI-5QzzEp4Y1Rw1c-cOxr-CpksABYujojIRCb5NyTJ5qkux2vWUi84guYi7/exec', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("message").textContent = data;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-        }
-    </script>
+<script src="script.js"></script>
 </body>
 </html>

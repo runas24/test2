@@ -4,31 +4,58 @@ function formatCurrency(input) {
     input.value = formattedValue;
 }
 
-function calculateMaxLoanAmount() {
+document.getElementById("loanForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
     var fullName = document.getElementById("fullName").value;
     var loanDate = document.getElementById("loanDate").value;
     var desiredAmount = parseFloat(document.getElementById("desiredAmount").value.replace(/\D/g, ''));
     var creditBurden = parseFloat(document.getElementById("creditBurden").value.replace(/\D/g, ''));
     var pensionContributions = parseFloat(document.getElementById("pensionContributions").value.replace(/\D/g, ''));
 
+    // Рассчитываем максимальную сумму кредита
+    // Больший процент от пенсионных отчислений увеличивает максимальную сумму кредита
     var maxLoanAmount = desiredAmount - creditBurden + (pensionContributions * 6 * 2);
 
-    document.getElementById("resultMessage").innerText = "Максимальная сумма кредита: " + maxLoanAmount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " тенге";
-    document.getElementById("loader").style.display = "block"; // Показываем анимацию загрузки
+    // Форматируем максимальную сумму кредита с разделением пробелом
+    var formattedMaxLoanAmount = maxLoanAmount.toLocaleString('ru-RU');
 
-    setTimeout(function() {
-        document.getElementById("loader").style.display = "none"; // Скрываем анимацию загрузки
+    var formData = new FormData();
+    formData.append("fullName", fullName);
+    formData.append("loanDate", loanDate);
+    formData.append("maxLoanAmount", formattedMaxLoanAmount); // Отправляем форматированное значение
+
+    // Показываем анимированную загрузку
+    var loader = document.getElementById("loader");
+    loader.style.display = "block";
+
+    fetch('https://script.google.com/macros/s/AKfycbxGh8pH6EOSuN6Ys0vov4Bex-pnyd43S1or2w81LTZoZWM8-nG7sDwyxA9OKs5DXsh4/exec', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.getElementById("resultMessage").textContent = data;
         document.getElementById("viewResultButton").style.display = "block"; // Показываем кнопку "Посмотреть результат"
-    }, 10000); // Результат появится через 10 секунд (10000 миллисекунд)
-}
+        loader.style.display = "none"; // Скрываем анимированную загрузку после завершения
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        loader.style.display = "none"; // Скрываем анимированную загрузку в случае ошибки
+    });
+});
 
-function calculateMonthlyPayment() {
-    var loanAmount = parseFloat(document.getElementById("loanAmount").value);
-    var interestRate = parseFloat(document.getElementById("interestRate").value) / 100;
+document.getElementById("monthlyPaymentForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var loanAmount = parseFloat(document.getElementById("loanAmount").value.replace(/\D/g, ''));
     var loanTerm = parseInt(document.getElementById("loanTerm").value);
+    var annualInterestRate = parseFloat(document.getElementById("annualInterestRate").value);
 
-    var monthlyInterestRate = interestRate / 12;
-    var monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -loanTerm));
+    // Рассчитываем ежемесячный платеж по формуле аннуитетного платежа
+    var monthlyInterestRate = annualInterestRate / 100 / 12;
+    var monthlyPayment = loanAmount * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -loanTerm));
 
-    document.getElementById("monthlyPayment").innerText = "Ежемесячный платеж: " + monthlyPayment.toFixed(2) + " тенге";
-}
+    // Отображаем результат на странице
+    document.getElementById("monthlyPaymentResult").innerHTML = "Ежемесячный платеж: " + monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " тенге";
+});

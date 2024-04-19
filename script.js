@@ -4,7 +4,6 @@ function formatCurrency(input) {
     input.value = formattedValue;
 }
 
-// Калькулятор для расчета максимальной суммы кредита
 document.getElementById("loanForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
@@ -13,19 +12,17 @@ document.getElementById("loanForm").addEventListener("submit", function(event) {
     var desiredAmount = parseFloat(document.getElementById("desiredAmount").value.replace(/\D/g, ''));
     var creditBurden = parseFloat(document.getElementById("creditBurden").value.replace(/\D/g, ''));
     var pensionContributions = parseFloat(document.getElementById("pensionContributions").value.replace(/\D/g, ''));
+    var loanTermYears = parseInt(document.getElementById("loanTerm").value);
 
     // Рассчитываем максимальную сумму кредита
     // Больший процент от пенсионных отчислений увеличивает максимальную сумму кредита
     var maxLoanAmount = desiredAmount - creditBurden + (pensionContributions * 6 * 2);
 
-    // Форматируем максимальную сумму кредита с разделением пробелом
-    var formattedMaxLoanAmount = maxLoanAmount.toLocaleString('ru-RU');
-
     var formData = new FormData();
     formData.append("fullName", fullName);
     formData.append("loanDate", loanDate);
-    formData.append("maxLoanAmount", formattedMaxLoanAmount); // Отправляем форматированное значение
-
+    formData.append("maxLoanAmount", maxLoanAmount);
+    
     // Показываем анимированную загрузку
     var loader = document.getElementById("loader");
     loader.style.display = "block";
@@ -46,19 +43,17 @@ document.getElementById("loanForm").addEventListener("submit", function(event) {
     });
 });
 
-// Калькулятор для расчета ежемесячного платежа
-document.getElementById("monthlyPaymentForm").addEventListener("submit", function(event) {
+document.getElementById("paymentForm").addEventListener("submit", function(event) {
     event.preventDefault();
 
-    var desiredAmount = parseFloat(document.getElementById("desiredAmount").value.replace(/\D/g, ''));
-    var annualInterestRate = parseFloat(document.getElementById("annualInterestRate").value);
-    var loanTerm = parseInt(document.getElementById("loanTerm").value);
+    var loanAmount = parseFloat(document.getElementById("loanAmount").value.replace(/\D/g, ''));
+    var interestRate = parseFloat(document.getElementById("interestRate").value);
+    var loanTermMonths = parseInt(document.getElementById("loanTermMonths").value);
 
     // Рассчитываем ежемесячный платеж
-    var monthlyInterestRate = annualInterestRate / 100 / 12;
-    var numberOfPayments = loanTerm * 12;
-    var monthlyPayment = (desiredAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments));
+    var monthlyInterestRate = interestRate / 100 / 12;
+    var monthlyPayment = loanAmount * monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -loanTermMonths));
 
-    // Показываем результат на сайте
-    document.getElementById("monthlyPaymentResult").innerHTML = "Ежемесячный платеж: " + monthlyPayment.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ") + " тенге";
+    // Отображаем результат
+    document.getElementById("monthlyPaymentResult").textContent = "Ежемесячный платеж: " + monthlyPayment.toFixed(2) + " тенге";
 });
